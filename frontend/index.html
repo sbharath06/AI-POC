@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probot-06 AI Assistant</title>
+    <meta name="description" content="Premium AI Assistant Interface">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Highlight.js for Code Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
+    
+    <!-- DOMPurify -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- App Container -->
+    <div id="app-container" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand">
+                    <div class="brand-icon"><i class="fa-solid fa-robot"></i></div>
+                    <span class="brand-name">Probot-06</span>
+                </div>
+                <div class="sidebar-actions">
+                    <button id="new-chat-btn" class="sidebar-icon-btn" title="New Chat"><i class="fa-solid fa-plus"></i></button>
+                    <button id="convert-nav-btn" class="sidebar-icon-btn" title="Convert Files"><i class="fa-solid fa-file-export"></i></button>
+                </div>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="section-title">Recent Chats</div>
+                <div id="session-list" class="session-list">
+                    <!-- Sessions will be injected here -->
+                </div>
+                
+                <div class="section-title toggle-section" id="docs-toggle">
+                    Documents <i class="fa-solid fa-chevron-down"></i>
+                </div>
+                <div id="document-list" class="document-list">
+                    <!-- Documents will be injected here -->
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="avatar"><i class="fa-solid fa-user"></i></div>
+                    <span id="username-display">User</span>
+                </div>
+                <button id="logout-btn" class="icon-btn" title="Logout"><i class="fa-solid fa-sign-out-alt"></i></button>
+            </div>
+        </aside>
+
+        <!-- Main Chat Area -->
+        <main class="chat-area">
+            <header class="chat-header">
+                <button id="sidebar-toggle" class="icon-btn sidebar-toggle-btn"><i class="fa-solid fa-bars"></i></button>
+                <h1 class="probot-title">Probot-06 <span class="model-badge">Pro</span></h1>
+                <div class="header-actions">
+                    <button id="settings-btn" class="icon-btn" title="Settings"><i class="fa-solid fa-gear"></i></button>
+                </div>
+            </header>
+            
+            <div id="messages-container" class="messages-container">
+                <!-- Welcome Screen -->
+                <div id="welcome-screen" class="welcome-screen">
+                    <div class="probot-logo">
+                        <div class="logo-circle">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                    </div>
+                    <h2 class="welcome-title">Probot-06</h2>
+                    <p class="welcome-subtitle">AI-Powered Assistant by Bharath</p>
+                    <p class="welcome-description">Your intelligent companion for document conversion, data analysis, predictive insights, and smart conversations — powered by advanced AI.</p>
+                    
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-file-export"></i></div>
+                            <h3>Convert Files</h3>
+                            <p>PDF, Word, TXT, Excel — convert between any format instantly</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+                            <h3>Predict & Analyze</h3>
+                            <p>Upload data files for ML-powered predictions and insights</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-brain"></i></div>
+                            <h3>ML/DL Expert</h3>
+                            <p>Ask about any algorithm — from Linear Regression to Transformers</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon"><i class="fa-solid fa-globe"></i></div>
+                            <h3>Real-time Search</h3>
+                            <p>Fetches latest information from the web for current queries</p>
+                        </div>
+                    </div>
+
+                    <div class="suggestions-grid">
+                        <div class="suggestion-card" data-prompt="Convert my document to PDF">
+                            <h3>Convert a document</h3>
+                            <p>to PDF, Word, or TXT</p>
+                        </div>
+                        <div class="suggestion-card" data-prompt="Explain Random Forest algorithm with example">
+                            <h3>Explain Random Forest</h3>
+                            <p>with a practical example</p>
+                        </div>
+                        <div class="suggestion-card" data-prompt="What are the latest trends in AI in 2026?">
+                            <h3>Latest AI trends</h3>
+                            <p>in 2026</p>
+                        </div>
+                        <div class="suggestion-card" data-prompt="Analyze my data and predict outcomes">
+                            <h3>Analyze & predict</h3>
+                            <p>from my uploaded data</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Chat Messages will be injected here -->
+            </div>
+            
+            <div class="input-area-wrapper">
+                <div class="input-area">
+                    <button id="upload-btn" class="action-btn" title="Upload Document">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </button>
+                    <textarea id="chat-input" placeholder="Message Probot-06..." rows="1"></textarea>
+                    <button id="voice-btn" class="action-btn" title="Voice Input">
+                        <i class="fa-solid fa-microphone"></i>
+                    </button>
+                    <button id="send-btn" class="send-btn" title="Send Message" disabled>
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="input-footer">
+                    Probot-06 can make mistakes. Consider verifying important information.
+                </div>
+                <div class="creator-credit">Created by Bharath ✨</div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-gradient-line"></div>
+            <div class="auth-header">
+                <h2>Probot-06</h2>
+                <p>Welcome back</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Login</button>
+                <button class="auth-tab" data-tab="register">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form active">
+                <div class="input-group">
+                    <input type="text" id="login-username" required placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="login-password" required placeholder="Password">
+                </div>
+                <div id="login-error" class="error-message hidden"></div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Sign In</span>
+                    <i class="fa-solid fa-spinner fa-spin hidden btn-loader"></i>
+                </button>
+            </form>
+            
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="input-group">
+                    <input type="text" id="register-username" required placeholder="Username">
+                </div>
+                <div class="input-group">
+                    <input type="email" id="register-email" required placeholder="Email">
+                </div>
+                <div class="input-group">
+                    <input type="password" id="register-password" required placeholder="Password">
+                </div>
+                <div id="register-error" class="error-message hidden"></div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Create Account</span>
+                    <i class="fa-solid fa-spinner fa-spin hidden btn-loader"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Upload Modal -->
+    <div id="upload-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Upload Document</h3>
+                <button id="close-upload-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="drop-zone" class="drop-zone">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Drag & drop your file here</p>
+                <p class="drop-zone-muted">Supported formats: PDF, TXT, MD (Max 10MB)</p>
+                <input type="file" id="file-input" class="hidden-file-input" accept=".pdf,.txt,.md">
+                <button class="browse-btn" onclick="document.getElementById('file-input').click()">Browse Files</button>
+            </div>
+            <div id="upload-progress-container" class="upload-progress-container hidden">
+                <div class="progress-bar">
+                    <div id="upload-progress" class="progress-fill"></div>
+                </div>
+                <span id="upload-status-text">Uploading...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Convert Modal -->
+    <div id="convert-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-export"></i> Convert File</h3>
+                <button id="close-convert-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="convert-drop-zone" class="drop-zone">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                <p>Drop your file here to convert</p>
+                <p class="drop-zone-muted">Supports: PDF, DOCX, TXT, XLSX, MD, CSV</p>
+                <input type="file" id="convert-file-input" class="hidden-file-input" accept=".pdf,.docx,.txt,.xlsx,.md,.csv">
+                <button class="browse-btn" onclick="document.getElementById('convert-file-input').click()">Browse Files</button>
+            </div>
+            <div id="convert-options" class="convert-options hidden">
+                <div class="selected-file">
+                    <i class="fa-solid fa-file"></i>
+                    <span id="convert-filename"></span>
+                </div>
+                <div class="format-selector">
+                    <label>Convert to:</label>
+                    <select id="output-format">
+                        <option value="pdf">PDF</option>
+                        <option value="docx">Word (DOCX)</option>
+                        <option value="txt">Plain Text (TXT)</option>
+                        <option value="csv">CSV</option>
+                    </select>
+                </div>
+                <button id="convert-btn" class="submit-btn">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Convert & Summarize
+                </button>
+            </div>
+            <div id="convert-result" class="convert-result hidden">
+                <div class="convert-success">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <h4>Conversion Complete!</h4>
+                </div>
+                <div id="convert-summary" class="convert-summary"></div>
+                <a id="convert-download-link" class="submit-btn" style="text-decoration: none; text-align: center;" download>
+                    <i class="fa-solid fa-download"></i> Download File
+                </a>
+            </div>
+            <div id="convert-progress" class="upload-progress-container hidden">
+                <div class="progress-bar">
+                    <div id="convert-progress-bar" class="progress-fill"></div>
+                </div>
+                <span id="convert-status-text">Converting...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal-overlay hidden">
+        <div class="modal-card settings-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-gear"></i> Settings</h3>
+                <button id="close-settings-btn" class="icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="settings-body">
+                <div class="setting-group">
+                    <label class="setting-label">Font Size</label>
+                    <div class="setting-control">
+                        <input type="range" id="font-size-slider" min="12" max="20" value="15" class="setting-slider">
+                        <span id="font-size-value" class="setting-value">15px</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Message Style</label>
+                    <div class="setting-control">
+                        <select id="message-style-select" class="setting-select">
+                            <option value="bubbles">Chat Bubbles</option>
+                            <option value="flat">Flat Messages</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Voice Language</label>
+                    <div class="setting-control">
+                        <select id="voice-lang-select" class="setting-select">
+                            <option value="en-IN">English (India)</option>
+                            <option value="en-US">English (US)</option>
+                            <option value="en-GB">English (UK)</option>
+                            <option value="hi-IN">Hindi</option>
+                            <option value="ta-IN">Tamil</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Auto Web Search</label>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="auto-search-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="setting-hint">Automatically search web for recent topics</span>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label class="setting-label">Send with Enter</label>
+                    <div class="setting-control">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="enter-send-toggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <span class="setting-hint">Press Enter to send, Shift+Enter for new line</span>
+                    </div>
+                </div>
+                <div class="settings-footer">
+                    <button id="clear-history-btn" class="danger-btn"><i class="fa-solid fa-trash"></i> Clear All Chats</button>
+                    <button id="save-settings-btn" class="submit-btn"><i class="fa-solid fa-check"></i> Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    
+    <script src="js/websocket.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/voice.js"></script>
+    <script src="js/upload.js"></script>
+    <script src="js/converter.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
