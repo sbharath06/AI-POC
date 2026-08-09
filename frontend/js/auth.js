@@ -102,11 +102,21 @@ class AuthManager {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Registration failed');
+            let errorMsg = 'Registration failed';
+            try {
+                const error = await response.json();
+                errorMsg = error.detail || errorMsg;
+            } catch (e) {
+                errorMsg = `Server error (${response.status}). Please try logging in or registering again.`;
+            }
+            throw new Error(errorMsg);
         }
 
-        return await this.login(username, password);
+        try {
+            return await response.json();
+        } catch (e) {
+            return { message: 'Registration successful' };
+        }
     }
 
     logout() {
