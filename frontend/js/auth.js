@@ -7,6 +7,8 @@ class AuthManager {
     setupBaseUrl() {
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             this.baseUrl = 'http://localhost:8000';
+        } else if (window.PROBOT_BACKEND_URL) {
+            this.baseUrl = window.PROBOT_BACKEND_URL;
         } else {
             this.baseUrl = window.location.origin;
         }
