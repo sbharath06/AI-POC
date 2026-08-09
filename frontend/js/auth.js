@@ -9,6 +9,9 @@ class AuthManager {
             this.baseUrl = 'http://localhost:8000';
         } else if (window.PROBOT_BACKEND_URL) {
             this.baseUrl = window.PROBOT_BACKEND_URL;
+        } else if (window.location.hostname.includes('netlify.app') || window.location.hostname.includes('github.io')) {
+            // Netlify serves static frontend — route API requests to local backend by default
+            this.baseUrl = 'http://localhost:8000';
         } else {
             this.baseUrl = window.location.origin;
         }
@@ -70,13 +73,23 @@ class AuthManager {
         });
 
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Login failed');
+            let errorMsg = 'Login failed';
+            try {
+                const error = await response.json();
+                errorMsg = error.detail || errorMsg;
+            } catch (e) {
+                errorMsg = `Server error (${response.status}). Ensure backend is running.`;
+            }
+            throw new Error(errorMsg);
         }
 
-        const data = await response.json();
-        this.setToken(data.access_token);
-        return data;
+        try {
+            const data = await response.json();
+            this.setToken(data.access_token);
+            return data;
+        } catch (e) {
+            throw new Error(`Unable to connect to backend server at ${this.baseUrl}`);
+        }
     }
 
     async register(username, email, password) {
