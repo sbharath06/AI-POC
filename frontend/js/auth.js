@@ -119,6 +119,42 @@ class AuthManager {
         }
     }
 
+    async forgotPassword(email) {
+        const response = await fetch(`${this.baseUrl}/api/auth/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ detail: 'Failed to generate reset code' }));
+            throw new Error(error.detail || 'Failed to generate reset code');
+        }
+        return await response.json();
+    }
+
+    async resetPassword(email, reset_code, new_password) {
+        const response = await fetch(`${this.baseUrl}/api/auth/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, reset_code, new_password })
+        });
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({ detail: 'Failed to reset password' }));
+            throw new Error(error.detail || 'Failed to reset password');
+        }
+        return await response.json();
+    }
+
+    async wipeDatabase() {
+        const response = await fetch(`${this.baseUrl}/api/auth/wipe-database`, {
+            method: 'POST'
+        });
+        if (!response.ok) {
+            throw new Error('Failed to wipe database');
+        }
+        return await response.json();
+    }
+
     logout() {
         this.clearToken();
     }

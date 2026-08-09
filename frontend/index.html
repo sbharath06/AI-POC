@@ -172,6 +172,9 @@
                 <div class="input-group">
                     <input type="password" id="login-password" required placeholder="Password">
                 </div>
+                <div class="auth-sub-links" style="text-align: right; margin-bottom: 12px;">
+                    <a href="#" id="forgot-password-link" style="color: #f1c40f; font-size: 13px; text-decoration: underline;">Forgot Password?</a>
+                </div>
                 <div id="login-error" class="error-message hidden"></div>
                 <button type="submit" class="submit-btn">
                     <span class="btn-text">Sign In</span>
@@ -196,6 +199,34 @@
                     <i class="fa-solid fa-spinner fa-spin hidden btn-loader"></i>
                 </button>
             </form>
+
+            <!-- Forgot / Reset Password Form -->
+            <form id="forgot-form" class="auth-form hidden">
+                <div class="input-group">
+                    <input type="email" id="forgot-email" required placeholder="Account Email">
+                </div>
+                <div id="forgot-code-group" class="input-group hidden">
+                    <input type="text" id="reset-code" placeholder="6-digit reset code (e.g. 123456)">
+                </div>
+                <div id="forgot-newpass-group" class="input-group hidden">
+                    <input type="password" id="reset-new-password" placeholder="New Password">
+                </div>
+                <div id="forgot-error" class="error-message hidden"></div>
+                <div id="forgot-info" class="info-message hidden" style="color: #2ecc71; font-size: 13px; margin-bottom: 10px;"></div>
+                <button type="submit" id="forgot-btn" class="submit-btn">
+                    <span class="btn-text">Send Reset Code</span>
+                    <i class="fa-solid fa-spinner fa-spin hidden btn-loader"></i>
+                </button>
+                <div style="text-align: center; margin-top: 12px;">
+                    <a href="#" id="back-to-login-link" style="color: #aaa; font-size: 13px;">Back to Login</a>
+                </div>
+            </form>
+
+            <div style="margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; text-align: center;">
+                <button id="wipe-db-btn" type="button" style="background: transparent; border: 1px rgba(231,76,60,0.5) solid; color: #ff6b6b; padding: 5px 12px; font-size: 11px; border-radius: 6px; cursor: pointer;">
+                    <i class="fa-solid fa-trash-can"></i> Clear Old Database Records
+                </button>
+            </div>
         </div>
     </div>
 

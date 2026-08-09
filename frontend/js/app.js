@@ -216,11 +216,94 @@ class ProbotApp {
                 errorDiv.textContent = error.message;
                 errorDiv.classList.remove('hidden');
             } finally {
-                txt.classList.remove('hidden');
                 loader.classList.add('hidden');
                 btn.disabled = false;
             }
         });
+
+        // Forgot Password Link Click
+        const forgotLink = document.getElementById('forgot-password-link');
+        if (forgotLink) {
+            forgotLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.add('hidden'));
+                document.getElementById('forgot-form').classList.remove('hidden');
+            });
+        }
+
+        // Back to Login Link Click
+        const backLink = document.getElementById('back-to-login-link');
+        if (backLink) {
+            backLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.add('hidden'));
+                document.getElementById('login-form').classList.remove('hidden');
+            });
+        }
+
+        // Forgot / Reset Form Submit
+        let forgotStep = 1;
+        const forgotForm = document.getElementById('forgot-form');
+        if (forgotForm) {
+            forgotForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('forgot-btn');
+                const loader = btn.querySelector('.btn-loader');
+                const txt = btn.querySelector('.btn-text');
+                const errorDiv = document.getElementById('forgot-error');
+                const infoDiv = document.getElementById('forgot-info');
+                
+                errorDiv.classList.add('hidden');
+                infoDiv.classList.add('hidden');
+                txt.classList.add('hidden');
+                loader.classList.remove('hidden');
+                btn.disabled = true;
+
+                try {
+                    const email = document.getElementById('forgot-email').value;
+                    if (forgotStep === 1) {
+                        const res = await this.auth.forgotPassword(email);
+                        infoDiv.textContent = `Reset Code: ${res.reset_code} (Code generated for ${email})`;
+                        infoDiv.classList.remove('hidden');
+                        document.getElementById('forgot-code-group').classList.remove('hidden');
+                        document.getElementById('forgot-newpass-group').classList.remove('hidden');
+                        txt.textContent = "Reset Password";
+                        forgotStep = 2;
+                    } else {
+                        const code = document.getElementById('reset-code').value;
+                        const newPass = document.getElementById('reset-new-password').value;
+                        await this.auth.resetPassword(email, code, newPass);
+                        this.showToast("Password reset successful! Please log in.", "success");
+                        document.querySelectorAll('.auth-form').forEach(f => f.classList.add('hidden'));
+                        document.getElementById('login-form').classList.remove('hidden');
+                        forgotStep = 1;
+                    }
+                } catch (error) {
+                    errorDiv.textContent = error.message;
+                    errorDiv.classList.remove('hidden');
+                } finally {
+                    txt.classList.remove('hidden');
+                    loader.classList.add('hidden');
+                    btn.disabled = false;
+                }
+            });
+        }
+
+        // Wipe Database Button
+        const wipeBtn = document.getElementById('wipe-db-btn');
+        if (wipeBtn) {
+            wipeBtn.addEventListener('click', async () => {
+                if (confirm("Are you sure you want to erase all existing database user credentials and start clean?")) {
+                    try {
+                        const res = await this.auth.wipeDatabase();
+                        this.showToast(res.message || "Database cleared cleanly!", "success");
+                        alert("Database records erased! You can now create a fresh account.");
+                    } catch (err) {
+                        alert("Database wipe failed: " + err.message);
+                    }
+                }
+            });
+        }
     }
 
     showAuthScreen() {
