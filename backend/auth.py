@@ -8,8 +8,12 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from .config import settings
-from .database import get_db, User
+try:
+    from config import settings
+    from database import get_db, User
+except ImportError:
+    from .config import settings
+    from .database import get_db, User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")

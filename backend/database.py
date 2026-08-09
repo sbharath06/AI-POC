@@ -3,7 +3,10 @@ import json
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
-from .config import settings
+try:
+    from config import settings
+except ImportError:
+    from .config import settings
 
 Base = declarative_base()
 

@@ -11,14 +11,22 @@ from pydantic import BaseModel
 import requests
 from bs4 import BeautifulSoup
 from fastapi.responses import FileResponse
-from .tools.converter import convert_file
-from .tools.analyzer import analyze_data, predict_data, format_analysis_for_llm
-
-from .config import settings
-from .database import get_db, init_db, User, ChatSession, ChatMessage, Document, AsyncSessionLocal
-from .auth import router as auth_router, get_current_user
-from .llm_engine import get_llm_provider
-from .rag.engine import rag_engine
+try:
+    from tools.converter import convert_file
+    from tools.analyzer import analyze_data, predict_data, format_analysis_for_llm
+    from config import settings
+    from database import get_db, init_db, User, ChatSession, ChatMessage, Document, AsyncSessionLocal
+    from auth import router as auth_router, get_current_user
+    from llm_engine import get_llm_provider
+    from rag.engine import rag_engine
+except ImportError:
+    from .tools.converter import convert_file
+    from .tools.analyzer import analyze_data, predict_data, format_analysis_for_llm
+    from .config import settings
+    from .database import get_db, init_db, User, ChatSession, ChatMessage, Document, AsyncSessionLocal
+    from .auth import router as auth_router, get_current_user
+    from .llm_engine import get_llm_provider
+    from .rag.engine import rag_engine
 
 app = FastAPI(title="Probot-06 API")
 

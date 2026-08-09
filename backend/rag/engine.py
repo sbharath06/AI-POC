@@ -3,9 +3,20 @@ from typing import List, Dict, Any, Tuple
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
-from ..config import settings
-from .document_loader import load_document
-from .embeddings import embeddings
+try:
+    from config import settings
+except ImportError:
+    try:
+        from ..config import settings
+    except ImportError:
+        from backend.config import settings
+
+try:
+    from rag.document_loader import load_document
+    from rag.embeddings import embeddings
+except ImportError:
+    from .document_loader import load_document
+    from .embeddings import embeddings
 
 class RAGEngine:
     def __init__(self):

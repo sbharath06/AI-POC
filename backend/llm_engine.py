@@ -2,7 +2,10 @@ import os
 from typing import List, Dict, Any, AsyncGenerator, Optional
 import json
 
-from .config import settings
+try:
+    from config import settings
+except ImportError:
+    from .config import settings
 
 class LLMEngine:
     async def generate(self, messages: List[Dict[str, str]], context: Optional[str] = None) -> str:
