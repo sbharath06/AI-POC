@@ -169,11 +169,15 @@
                 <div class="input-group">
                     <input type="text" id="login-username" required placeholder="Username">
                 </div>
-                <div class="input-group">
+                <div class="input-group password-group" style="position: relative;">
                     <input type="password" id="login-password" required placeholder="Password">
+                    <i class="fa-solid fa-eye toggle-password" data-target="login-password" style="position: absolute; right: 14px; top: 14px; cursor: pointer; color: #aaa;"></i>
                 </div>
-                <div class="auth-sub-links" style="text-align: right; margin-bottom: 12px;">
-                    <a href="#" id="forgot-password-link" style="color: #f1c40f; font-size: 13px; text-decoration: underline;">Forgot Password?</a>
+                <div class="auth-sub-links" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 13px;">
+                    <label style="color: #bbb; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                        <input type="checkbox" id="remember-me" checked style="accent-color: #f1c40f;"> Remember Me
+                    </label>
+                    <a href="#" id="forgot-password-link" style="color: #f1c40f; text-decoration: underline;">Forgot Password?</a>
                 </div>
                 <div id="login-error" class="error-message hidden"></div>
                 <button type="submit" class="submit-btn">

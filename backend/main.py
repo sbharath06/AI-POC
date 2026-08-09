@@ -108,14 +108,21 @@ def web_search(query: str, num_results: int = 5) -> str:
 
     return ""
 
+GREETING_PATTERNS = re.compile(
+    r'^(hi+|hello|hey+|good\s*(morning|evening|afternoon|day)|howdy|greetings|who\s*are\s*you|what\s*is\s*your\s*name|how\s*are\s*you|thanks|thank\s*you|cool|awesome|ok|okay|bye|goodbye)\b',
+    re.IGNORECASE
+)
+
 def needs_web_search(query: str) -> bool:
     """Detect if a query needs real-time or external web information."""
-    if not query or len(query.strip()) < 2:
+    if not query or len(query.strip()) < 3:
         return False
-    clean = query.strip()
+    clean = query.strip().lower()
+    if GREETING_PATTERNS.match(clean):
+        return False
     if NEEDS_SEARCH_PATTERNS.search(clean):
         return True
-    if clean.endswith("?") and len(clean.split()) >= 3:
+    if clean.endswith("?") and len(clean.split()) >= 4:
         return True
     return False
 

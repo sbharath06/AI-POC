@@ -221,6 +221,25 @@ class ProbotApp {
             }
         });
 
+        // Toggle Password Eye Icons
+        document.querySelectorAll('.toggle-password').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                const targetId = e.target.dataset.target;
+                const input = document.getElementById(targetId);
+                if (input) {
+                    if (input.type === 'password') {
+                        input.type = 'text';
+                        e.target.classList.remove('fa-eye');
+                        e.target.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password';
+                        e.target.classList.remove('fa-eye-slash');
+                        e.target.classList.add('fa-eye');
+                    }
+                }
+            });
+        });
+
         // Forgot Password Link Click
         const forgotLink = document.getElementById('forgot-password-link');
         if (forgotLink) {
