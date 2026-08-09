@@ -39,6 +39,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+def get_password_hash(password: str) -> str:
+    salt = "probot_salt_2026"
+    return hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt.encode('utf-8'), 100000).hex()
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     if not hashed_password or not plain_password:
         return False
