@@ -83,26 +83,42 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession
 
 @router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).where((User.username == user.username) | (User.email == user.email)))
-    if result.scalars().first():
-        raise HTTPException(status_code=400, detail="Username or email already registered")
-        
-    hashed_password = get_password_hash(user.password)
-    db_user = User(username=user.username, email=user.email, hashed_password=hashed_password)
-    db.add(db_user)
-    await db.commit()
-    await db.refresh(db_user)
-    return db_user
+    try:
+        result = await db.execute(select(User).where((User.username == user.username) | (User.email == user.email)))
+        if result.scalars().first():
+            raise HTTPException(status_code=400, detail="Username or email already registered")
+            
+        hashed_password = get_password_hash(user.password)
+        db_user = User(username=user.username, email=user.email, hashed_password=hashed_password)
+        db.add(db_user)
+        await db.commit()
+        await db.refresh(db_user)
+        return db_user
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        err_msg = str(e) or type(e).__name__
+        print("REGISTER ERROR TRACEBACK:\n", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Registration Error: {err_msg}")
 
 @router.post("/login", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
-    result = await db.execute(select(User).where(User.username == form_data.username))
-    user = result.scalars().first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    access_token = create_access_token(data={"sub": user.username})
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        result = await db.execute(select(User).where(User.username == form_data.username))
+        user = result.scalars().first()
+        if not user or not verify_password(form_data.password, user.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Incorrect username or password",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        access_token = create_access_token(data={"sub": user.username})
+        return {"access_token": access_token, "token_type": "bearer"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        import traceback
+        err_msg = str(e) or type(e).__name__
+        print("LOGIN ERROR TRACEBACK:\n", traceback.format_exc())
+        raise HTTPException(status_code=500, detail=f"Login Error: {err_msg}")
